@@ -26,6 +26,11 @@ defmodule JSString do
       "ビール"
       iex> JSString.charcodes_to_string([55356, 57210])
       "🍺"
+
+      iex> JSString.js_length("Beer")
+      4
+      iex> JSString.js_length("🍺")
+      2
   """
 
   # Get charcodes list from string.
@@ -45,25 +50,30 @@ defmodule JSString do
     end)
   end
 
+  # Get JavaScript string length
+  def js_length(string) do
+    string |> string_to_charcodes |> length
+  end
+
   # Get String from JavaScript charcodes list
   def charcodes_to_string(charcodes) do
-    charcodes_to_string(charcodes, [])
+    charcodes |> charcodes_to_string([])
   end
 
   # High surrogate needs low surrogate to make a String.
   defp charcodes_to_string([high_surrogate|tail], result) when 0xD800 <= high_surrogate and high_surrogate <= 0xDBFF do
-    charcodes_to_string(tail, high_surrogate, result)
+    tail |> charcodes_to_string(high_surrogate, result)
   end
 
   # Low surrogate needs high surrogate. Get a String from these two surrogate.
   defp charcodes_to_string([low_surrogate|tail], high_surrogate, result) when 0xDC00 <= low_surrogate and low_surrogate <= 0xDFFF do
     result = result |> List.insert_at(-1, ((high_surrogate - 0xD800) * 0x400) + (low_surrogate - 0xDC00) + 0x10000)
-    charcodes_to_string(tail, result)
+    tail |> charcodes_to_string(result)
   end
 
   # Single byte character
   defp charcodes_to_string([code|tail], result) do
-    charcodes_to_string(tail, result |> List.insert_at(-1, code))
+    tail |> charcodes_to_string(result |> List.insert_at(-1, code))
   end
 
   defp charcodes_to_string([], result) do
