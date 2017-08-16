@@ -6,7 +6,7 @@ There are differences between JavaScript string length and Elixir string length.
 JavaScript String.prototype.length sometimes doesn't return the actual string length.
 For example, a length of some Emoji is sometimes more than 1.
 
-This library allow you to get JavaScript string length in Elixir codes.
+This library get you to get JavaScript string length in Elixir codes.
 
 
 ## Installation
