@@ -1,5 +1,7 @@
 # JSString (for Elixir)
 
+[![CircleCI](https://circleci.com/gh/ecpplus/elixir-js-string.svg?style=svg)](https://circleci.com/gh/ecpplus/elixir-js-string)
+
 There are differences between JavaScript string length and Elixir string length.
 JavaScript String.prototype.length sometimes doesn't return the actual string length.
 For example, a length of some Emoji is sometimes more than 1.
