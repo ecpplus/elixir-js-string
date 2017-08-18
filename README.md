@@ -17,7 +17,7 @@ by adding `elixir_js_string` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elixir_js_string, "~> 0.1.0"}
+    {:elixir_js_string, "> 0.1.0"}
   ]
 end
 ```
