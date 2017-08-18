@@ -7,8 +7,6 @@ defmodule JSString do
   """
 
   @doc """
-
-
   ## Examples
 
       iex> JSString.string_to_charcodes("Beer")
