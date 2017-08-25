@@ -58,15 +58,13 @@ defmodule JSString do
     charcodes |> charcodes_to_string([])
   end
 
-  # High surrogate needs low surrogate to make a String.
-  defp charcodes_to_string([high_surrogate|tail], result) when 0xD800 <= high_surrogate and high_surrogate <= 0xDBFF do
-    tail |> charcodes_to_string(high_surrogate, result)
+  defp charcodes_to_string([], result) do
+    to_string result
   end
 
-  # Low surrogate needs high surrogate. Get a String from these two surrogate.
-  defp charcodes_to_string([low_surrogate|tail], high_surrogate, result) when 0xDC00 <= low_surrogate and low_surrogate <= 0xDFFF do
-    result = result |> List.insert_at(-1, ((high_surrogate - 0xD800) * 0x400) + (low_surrogate - 0xDC00) + 0x10000)
-    tail |> charcodes_to_string(result)
+  # High surrogate needs low surrogate to make a String.
+  defp charcodes_to_string([high_surrogate|tail], result) when 0xD800 <= high_surrogate and high_surrogate <= 0xDBFF do
+    tail |> charcodes_to_string_with_high_surrogate(high_surrogate, result)
   end
 
   # Single byte character
@@ -74,7 +72,9 @@ defmodule JSString do
     tail |> charcodes_to_string(result |> List.insert_at(-1, code))
   end
 
-  defp charcodes_to_string([], result) do
-    to_string result
+  # Low surrogate needs high surrogate. Get a String from these two surrogate.
+  defp charcodes_to_string_with_high_surrogate([low_surrogate|tail], high_surrogate, result) when 0xDC00 <= low_surrogate and low_surrogate <= 0xDFFF do
+    result = result |> List.insert_at(-1, ((high_surrogate - 0xD800) * 0x400) + (low_surrogate - 0xDC00) + 0x10000)
+    tail |> charcodes_to_string(result)
   end
 end
